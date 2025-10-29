@@ -1,0 +1,117 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Pedir turno para barberia",
+        "formDescription": "Este formulario va a servir para que los clientes pidan turnos en la barbieria del empresario",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Nombre completo",
+              "placeholder": "Escriba su nombre completo",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "email",
+              "fieldType": "email",
+              "placeholder": "Escriba su email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "dia",
+              "fieldType": "date",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "0c2bbc17-58a1-401e-8697-3f9d3a795ce3",
+      "name": "On form submission",
+      "webhookId": "09b29974-cb6f-4478-acd0-fea908d41441"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "=Turno agendado el dia {{ $json.dia }}",
+        "message": "=Se agendo correctamente tu turno para cortarse el pelo el dia {{ $json.dia }}.\nGracias!",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        -192
+      ],
+      "id": "79ccc51d-37f4-4e16-b88b-c25a195294b1",
+      "name": "turno usuario",
+      "webhookId": "075a896f-5569-4c5e-bf77-44c3dbc486ab",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "RMTfhWdSbgsKsUUQ",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "franciscosuchomela@gmail.com",
+        "subject": "prueba de N8N",
+        "message": "hola desde N8N",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "13db5e52-58aa-4c55-a0fd-185ca01d306d",
+      "name": "turno barbero",
+      "webhookId": "cd13dc53-1b7e-4870-91cf-99bdeab0cdb0",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "RMTfhWdSbgsKsUUQ",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "turno usuario",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "turno barbero",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "61ab834d-a637-43b2-96ab-cdc262614c17",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c8b2413bdc7e694f5784f8970ff8c039c083e4b7a51d2c7d1e9dcd49d9cd9003"
+  },
+  "id": "f9YOs8B4YoPzxqhZ",
+  "tags": []
+}
