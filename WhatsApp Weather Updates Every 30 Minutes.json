@@ -1,0 +1,178 @@
+{
+  "name": "WhatsApp Weather Updates Every 30 Minutes",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "id": "9c6aa365-2899-44a7-9e4c-82131de022a9",
+      "name": "Every 30 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        1872,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "city",
+              "value": "London",
+              "type": "string"
+            },
+            {
+              "id": "id-3",
+              "name": "email",
+              "value": "franciscosuchomela@gmail.com",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "id": "4d1325a8-faaa-4742-b1d2-d5e2c172f66c",
+      "name": "Workflow Configuration",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2096,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "cityName": "={{ $('Workflow Configuration').first().json.city }}"
+      },
+      "id": "c67a2238-6fb8-4061-8c9d-36bfd3033f88",
+      "name": "Get Weather Data",
+      "type": "n8n-nodes-base.openWeatherMap",
+      "typeVersion": 1,
+      "position": [
+        2320,
+        80
+      ],
+      "credentials": {
+        "openWeatherMapApi": {
+          "id": "X1Apld37t2MaKnTv",
+          "name": "OpenWeatherMap account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "id-1",
+              "name": "message",
+              "value": "=🌤️ *Clima Actual en {{ $json.name }}*\n\n🌡️ Temperatura: {{ $json.main.temp }}°C\n🤔 Sensación térmica: {{ $json.main.feels_like }}°C\n💧 Humedad: {{ $json.main.humidity }}%\n☁️ Condición: {{ $json.weather[0].description }}\n💨 Viento: {{ $json.wind.speed }} m/s\n\n_Actualizado: {{ $now.toLocaleString(\"es-ES\") }}_",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "176cf3e8-4beb-4abf-bb9a-48446ca1d7e5",
+      "name": "Format Weather Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2544,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "@franciscosuchomela@gmail.com",
+        "subject": "=Actualización del Clima - {{ $('Get Weather Data').first().json.name }}",
+        "message": "={{ $json.message }}",
+        "options": {}
+      },
+      "id": "0da8b882-6425-4141-8746-b173b028a217",
+      "name": "Send Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2768,
+        80
+      ],
+      "webhookId": "da9bdc83-9279-4f65-ab11-648e6a78fa02",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "RMTfhWdSbgsKsUUQ",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Every 30 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Workflow Configuration",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Workflow Configuration": {
+      "main": [
+        [
+          {
+            "node": "Get Weather Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Weather Data": {
+      "main": [
+        [
+          {
+            "node": "Format Weather Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Weather Message": {
+      "main": [
+        [
+          {
+            "node": "Send Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "466efe7c-c980-461e-9c54-9208563146d5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c8b2413bdc7e694f5784f8970ff8c039c083e4b7a51d2c7d1e9dcd49d9cd9003"
+  },
+  "id": "oVRaEppR817QdOe4",
+  "tags": []
+}
